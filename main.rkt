@@ -61,6 +61,8 @@
 ;;; " -> "" and ' -> ''
 (define (string-cleaner strng)
   (string-append "\"" (regexp-replace* "\"" strng "\"\"") "\""))
+  
+
 
 ;;; Missing, true/false, etc data can be adjusted here. Without this
 ;;; step, true/false data would be written to file as #t/#f and
@@ -68,9 +70,9 @@
 ;;; TRUE/FALSE and NA here.
 (define (format-csv-record record)
   (cond
-   ;; [(eq? record #t) #t]
-   ;; [(eq? record #f) #f]
-   ;; [(eq? record 'null) null]
+    [(eq? record #t) #t]
+    [(eq? record #f) #f]
+    [(eq? record 'null) null]
    [(string? record) (string-cleaner record)]
    [else record]))
 
@@ -91,7 +93,15 @@
 			 (when (not final?) (display delimeter))
 			 (column-loop (cdr fields))))))
 	       records))))
-
+	       
+;;; flattening the items in the list so that you have one complete list
+  
+(define (flatten lst)
+  (cond ((null? lst) '())
+        ((pair? (car lst))
+         (append (flatten(car lst))
+                 (flatten(cdr lst))))
+        (else(cons(car lst(flatten(cdr lst)))))))
 ;;; Extract a particular column of data from a list of lists by
 ;;; (c)olumn (i)index number
 (define (ci idx lsts)
